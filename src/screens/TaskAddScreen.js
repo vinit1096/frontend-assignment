@@ -6,28 +6,60 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  View,
+  ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import { useMutation, useQuery } from '@apollo/client';
 import { ADD_TASK, GET_TAGS } from '../store';
 import TagList from '../components/TagList';
+import { convertStringToDateFormat } from '../utils';
 
 const TaskAddScreen = (props) => {
-  // const { loading, error, data } = useQuery(GET_TASKS);
+  const { navigation, route } = props;
   const [title, setTitle] = useState('');
-  const [tag, setTag] = useState(0);
+  const [tag, setTag] = useState(null);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const { loading: tag_loading, data: tags_data } = useQuery(GET_TAGS);
   const [addTodo, { loading, error }] = useMutation(ADD_TASK);
 
   const onAddTask = () => {
+    const startTimeFormatted = new Date(convertStringToDateFormat(startTime));
+    const endTimeFormatted = new Date(convertStringToDateFormat(endTime));
     addTodo({
       variables: {
         title: title,
+        start_time: startTimeFormatted,
+        end_time: endTimeFormatted,
+        tag_id: tag?.id,
       },
-    });
-    console.log('data', data, loading, error);
+    })
+      .then((res) => {
+        console.log('added task', res);
+        ToastAndroid.show('Task Added Successfully', ToastAndroid.SHORT);
+        route?.params?.refreshTaskList();
+        navigation.goBack();
+      })
+      .catch((err) => {
+        console.log('error task', err);
+      });
+    // console.log('post add', title, startTime, endTime, tag.id);
     // gets called when add task clicked
   };
 
+  if (tag_loading || loading) {
+    return (
+      <ActivityIndicator
+        size="large"
+        color="#00ff00"
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      />
+    );
+  }
+  if (error) {
+    return <Text>Error Occured</Text>;
+  }
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
@@ -35,23 +67,30 @@ const TaskAddScreen = (props) => {
         <TextInput
           value={title}
           onChangeText={(text) => setTitle(text)}
-          onSubmitEditing={onAddTask}
           style={styles.inputText}
           placeholder="Enter title"
         />
         <TextInput
-          value={title}
-          onChangeText={(text) => setTitle(text)}
-          onSubmitEditing={onAddTask}
+          value={startTime}
+          onChangeText={(text) => setStartTime(text)}
           style={styles.inputText}
-          placeholder="Enter start date"
+          placeholder="MMDDYYY"
+          keyboardType="phone-pad"
         />
-        <TextInput />
-        <TagList
-          tags={tags_data.tags}
-          selectedTag={tag}
-          setSelectedTag={setTag}
+        <TextInput
+          value={endTime}
+          onChangeText={(text) => setEndTime(text)}
+          style={styles.inputText}
+          placeholder="MMDDYYY"
+          keyboardType="phone-pad"
         />
+        <View style={{ margin: 20 }}>
+          <TagList
+            tags={tags_data.tags}
+            selectedTag={tag}
+            setSelectedTag={setTag}
+          />
+        </View>
       </ScrollView>
       <TouchableOpacity style={styles.button} onPress={onAddTask}>
         <Text style={styles.buttonText}>Add task</Text>

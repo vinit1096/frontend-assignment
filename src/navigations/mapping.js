@@ -1,6 +1,7 @@
 // screen imported from one source
 import { TaskAddScreen, TaskListScreen, TaskDetailScreen } from '../screens';
 import { SCREENS } from './screens';
+
 // mapping of screens based on the keys passed to navigate method
 export const SCREEN_MAPPING = [
   {
