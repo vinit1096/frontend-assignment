@@ -16,6 +16,7 @@ import { DELETE_TASK_BY_ID } from '../store';
 
 // common components
 import Button from '../components/Button';
+import { CONSTANTS } from '../utils';
 
 const TaskDetailScreen = (props) => {
   const { navigation, route } = props;
@@ -31,11 +32,11 @@ const TaskDetailScreen = (props) => {
         // go back to main screen if delete completes
         navigation.goBack();
         route?.params?.refreshTaskList();
-        ToastAndroid.show('Task deleted Successfully!', ToastAndroid.SHORT);
+        ToastAndroid.show(CONSTANTS.TASK_DELETED, ToastAndroid.SHORT);
       })
       .catch(() => {
         // show error toast
-        ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
+        ToastAndroid.show(CONSTANTS.ERROR_MESSGAE, ToastAndroid.SHORT);
       });
   };
   if (loading) {

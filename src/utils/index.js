@@ -12,3 +12,9 @@ export const convertStringToDateFormat = (dateString) => {
 
   return formattedDateString;
 };
+
+export const CONSTANTS = {
+  TASK_ADDED: 'Task Added Successfully',
+  ERROR_MESSGAE: 'Oops something went wrong',
+  TASK_DELETED: 'Task deleted Successfully!',
+};

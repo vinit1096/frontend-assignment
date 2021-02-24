@@ -13,21 +13,28 @@ import {
 import { useMutation, useQuery } from '@apollo/client';
 import { ADD_TASK, GET_TAGS } from '../store';
 import TagList from '../components/TagList';
-import { convertStringToDateFormat } from '../utils';
+import { CONSTANTS, convertStringToDateFormat } from '../utils';
 
 const TaskAddScreen = (props) => {
-  const { navigation, route } = props;
   const [title, setTitle] = useState('');
   const [tag, setTag] = useState(null);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  // add task callback to post a task from graphql api
+  const [addTask, { loading, error }] = useMutation(ADD_TASK);
+  // fetches tags list and use loading to show loader
   const { loading: tag_loading, data: tags_data } = useQuery(GET_TAGS);
-  const [addTodo, { loading, error }] = useMutation(ADD_TASK);
+  const { navigation, route } = props;
 
+  // calls when user click on add task button
   const onAddTask = () => {
+    // converts passed time string to date object,so that it can get posted
+    // to the gql server
     const startTimeFormatted = new Date(convertStringToDateFormat(startTime));
     const endTimeFormatted = new Date(convertStringToDateFormat(endTime));
-    addTodo({
+
+    // callback method from mutuation to add the task
+    addTask({
       variables: {
         title: title,
         start_time: startTimeFormatted,
@@ -36,16 +43,14 @@ const TaskAddScreen = (props) => {
       },
     })
       .then((res) => {
-        console.log('added task', res);
-        ToastAndroid.show('Task Added Successfully', ToastAndroid.SHORT);
+        ToastAndroid.show(CONSTANTS.TASK_ADDED, ToastAndroid.SHORT);
         route?.params?.refreshTaskList();
         navigation.goBack();
       })
-      .catch((err) => {
-        console.log('error task', err);
+      .catch(() => {
+        // handle error
+        ToastAndroid.show(CONSTANTS.ERROR_MESSGAE, ToastAndroid.SHORT);
       });
-    // console.log('post add', title, startTime, endTime, tag.id);
-    // gets called when add task clicked
   };
 
   if (tag_loading || loading) {

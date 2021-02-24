@@ -7,6 +7,8 @@ const TagList = (props) => {
     setSelectedTag(item);
   };
   const renderItem = (item, index) => {
+    // if selected tag-id is matching with the
+    // tag item then active style will be applied
     const activeStyle =
       selectedTag?.id === item.id
         ? {
@@ -14,7 +16,7 @@ const TagList = (props) => {
             borderWidth: 0,
           }
         : {};
-    // adding comma to each element,except the last one
+
     return (
       <TouchableOpacity
         style={[styles.chip, { ...activeStyle }]}
