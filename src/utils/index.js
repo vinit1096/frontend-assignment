@@ -1,14 +1,11 @@
 export const convertStringToDateFormat = (dateString) => {
-  // converted date string to array format
-  const dateStringArray = dateString.split('');
-
   // a new string which converts ddmmyyyy to dd/mm/yyyy
   const formattedDateString =
-    dateStringArray.slice(0, 2).join('') +
+    dateString.substring(0, 2) +
     '/' +
-    dateStringArray.slice(2, 4).join('') +
+    dateString.substring(2, 4) +
     '/' +
-    dateStringArray.slice(4, 10).join('');
+    dateString.substring(4, 8);
 
   return formattedDateString;
 };
