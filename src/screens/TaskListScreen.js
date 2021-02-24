@@ -55,12 +55,24 @@ const TaskListScreen = (props) => {
     console.log('refreshing', networkStatus);
     refetch();
   };
-  return <Button label="ADD" onPress={onNavigate} />;
+  return (
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={data.tasks}
+        refreshing={loading}
+        renderItem={renderItem}
+        keyExtractor={(_item, index) => index.toString()}
+        onRefresh={onRefresh}
+      />
+
+      <Button label="ADD" onPress={onNavigate} />
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     backgroundColor: '#fffeee',
   },
 });

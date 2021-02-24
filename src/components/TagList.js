@@ -1,23 +1,37 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
 const TagList = (props) => {
-  const { tags } = props;
-  console.log('Taglist', tags);
-  const renderItem = ({ item, index }) => {
+  const { tags, selectedTag, setSelectedTag } = props;
+  const onChipPress = (index) => {
+    setSelectedTag(index);
+  };
+  const renderItem = (item, index) => {
+    const activeStyle =
+      selectedTag === index
+        ? {
+            backgroundColor: '#71C19E',
+            borderWidth: 0,
+          }
+        : {};
     // adding comma to each element,except the last one
-    const lastString = index === tags.length - 1 ? '' : ',';
-    return <Text style={styles.chip}>{item?.name}</Text>;
+    return (
+      <TouchableOpacity
+        style={[styles.chip, { ...activeStyle }]}
+        onPress={() => onChipPress(index)}>
+        <Text style={styles.chipText}>{item?.name}</Text>
+      </TouchableOpacity>
+    );
   };
   return (
     <View style={styles.tagsContainer}>
-      <FlatList
-        data={tags}
-        // horizontal={true}
-        renderItem={renderItem}
-        keyExtractor={(_item, index) => index.toString()}
-        numColumns={2}
-      />
+      {tags.map((item, index) => renderItem(item, index))}
     </View>
   );
 };
@@ -26,12 +40,18 @@ const styles = StyleSheet.create({
   tagsContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+    justifyContent: 'space-evenly',
     flex: 1,
   },
   chip: {
     width: 80,
     height: 40,
-    backgroundColor: 'red',
+    fontSize: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: 'black',
   },
 });
 

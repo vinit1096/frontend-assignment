@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -13,9 +13,9 @@ import TagList from '../components/TagList';
 
 const TaskAddScreen = (props) => {
   // const { loading, error, data } = useQuery(GET_TASKS);
-  const [title, setTitle] = React.useState('');
+  const [title, setTitle] = useState('');
+  const [tag, setTag] = useState(0);
   const { loading: tag_loading, data: tags_data } = useQuery(GET_TAGS);
-  console.log('tags data is', tag_loading);
   const [addTodo, { loading, error }] = useMutation(ADD_TASK);
 
   const onAddTask = () => {
@@ -47,7 +47,11 @@ const TaskAddScreen = (props) => {
           placeholder="Enter start date"
         />
         <TextInput />
-        <TagList tags={tags_data.tags} />
+        <TagList
+          tags={tags_data.tags}
+          selectedTag={tag}
+          setSelectedTag={setTag}
+        />
       </ScrollView>
       <TouchableOpacity style={styles.button} onPress={onAddTask}>
         <Text style={styles.buttonText}>Add task</Text>
